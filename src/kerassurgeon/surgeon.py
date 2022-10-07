@@ -435,6 +435,42 @@ class Surgeon:
                 config['weights'] = weights
                 new_layer = type(layer).from_config(config)
             outbound_mask = None
+        
+        elif layer_class in ('DepthwiseConv2D'):
+            if np.all(inbound_masks):
+                new_layer = layer
+            else:
+                if data_format == 'channels_first':
+                    print("channels first")
+                    inbound_masks = np.swapaxes(inbound_masks, 0, -1)
+                    
+                # Conv layer: trim down inbound_masks to filter shape
+                k_size = layer.kernel_size
+                # print(layer.name, k_size, inbound_masks.shape)
+
+                # Instantiate new layer with new_weights
+                my_mask = np.swapaxes(inbound_masks, 0, -1)
+                # print(my_mask.shape)
+
+                channel_indices = []
+                for i in range(my_mask.shape[0]):
+                    if np.where(my_mask[i] == False)[0].size != 0:
+                        channel_indices.append(i)
+
+                # print(channel_indices)
+                weights = [np.delete(layer.get_weights()[0], channel_indices, axis=-2)]
+
+                # Check if if the Convolution contains a bias add, if it does, just append the bias vector
+                if len(layer.get_weights()) == 2:
+                    weights.append(layer.get_weights()[1])
+
+                config = layer.get_config()
+                # print("Config", config)
+                config['weights'] = weights
+                new_layer = type(layer).from_config(config)
+                output_shape = layer.output_shape[1:]
+                outbound_mask = inbound_masks[:output_shape[0], :output_shape[1], :]
+                # print("Outputmask Shape", outbound_mask.shape)
 
         elif layer_class in ('Cropping1D', 'Cropping2D', 'Cropping3D',
                              'MaxPooling1D', 'MaxPooling2D',
