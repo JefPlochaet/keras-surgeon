@@ -15,6 +15,21 @@ layers can be modified in a single traversal of the network.
 These kinds of modifications are sometimes known as network surgery which 
 inspired the name of this package.
 
+## Note
+
+This version of keras-surgeon is slightly altered. We added the functionality of pruning "DepthwiseConv2D" layers and fixed a small bug in utils.py.
+
+You can install out version by cloning this repo and installing the keras-surgeon package as follows:
+
+```
+pip install keras-surgeon/
+```
+
+This version was tested with:
+
+* Tensorflow 2.5.3
+* Keras 2.5.0
+
 ## Background
 
 This project was motivated by my interest in deep learning and desire to 
