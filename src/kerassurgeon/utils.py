@@ -140,8 +140,15 @@ def single_element(x):
     if isinstance(x, tf.Tensor):
         return x
 
-    if len(x) == 1:
-        x = x[0]
+    # if len(x) == 1:
+    #     x = x[0]
+
+    try:
+        if len(x) == 1:
+            x = x[0]
+    except TypeError:
+        pass
+    
     return x
 
 
