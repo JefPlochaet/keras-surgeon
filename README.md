@@ -30,6 +30,8 @@ This version was tested with:
 * Tensorflow 2.5.3
 * Keras 2.5.0
 
+~ Jef Plochaet
+
 ## Background
 
 This project was motivated by my interest in deep learning and desire to 
